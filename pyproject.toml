@@ -25,7 +25,7 @@ exclude = ["daemonize/tests*"]
 
 [project]
 name = "python-deamonizer"
-version = "1.0.0"
+version = "1.0.1"
 description = "A daemanization class."
 readme = "README.rst"
 authors = [
@@ -37,7 +37,7 @@ maintainers = [
 license = {file = "LICENSE"}
 dependencies = [
 ]
-requires-python = ">= 3.8"
+requires-python = ">=3.8"
 classifiers = [
   # How mature is this project? Common values are
   #   3 - Alpha

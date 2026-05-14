@@ -20,14 +20,24 @@ TEST_PATH	= # The path to run tests on.
 TEST_TAG	= # The path to run tests on.
 
 #----------------------------------------------------------------------
-all	: tar
+all	: help
 
 #----------------------------------------------------------------------
+.PHONY:	help
+help	:
+	@LC_ALL=C $(MAKE) -pRrq -f $(firstword $(MAKEFILE_LIST)) : \
+                2>/dev/null | awk -v RS= \
+                -F: '/(^|\n)# Files(\n|$$)/,/(^|\n)# Finished Make data \
+                     base/ {if ($$1 !~ "^[#.]") {print $$1}}' | sort | grep \
+                -E -v -e '^[^[:alnum:]]' -e '^$@$$'
+
 .PHONY	: tar
 tar	: clean
 	@(cd ..; tar -czvf $(DISTNAME).tar.gz --exclude=".git" \
-          --exclude="logs/*.log" --exclude="dist/*" $(PACKAGE_DIR))
+          --exclude="__pycache__" --exclude="logs/*.log" --exclude="dist/*" \
+          $(PACKAGE_DIR))
 
+#----------------------------------------------------------------------
 # Run all tests
 # $ make tests
 #
@@ -57,6 +67,7 @@ flake8	:
         # Warn on everything else.
 	flake8 . --exit-zero
 
+#----------------------------------------------------------------------
 # To add a pre-release candidate such as 'rc1' to a test package name an
 # environment variable needs to be set that setup.py can read.
 #
@@ -81,6 +92,7 @@ upload-test: build
 	hatch publish --repo test dist/*
 #	twine upload --verbose --repository testpypi dist/*
 
+#----------------------------------------------------------------------
 .PHONY	: install-dev
 install-dev:
 	pip install $(PIP_ARGS) -r requirements/development.txt
@@ -98,4 +110,4 @@ clobber	: clean
 	@rm -f $(LOGS_DIR)/*.pid
 	@rm -f $(LOGS_DIR)/*.txt
 	@rm -rf __pycache__
-	@rm -rf build
+	@rm -rf build *.egg-info
