@@ -25,7 +25,7 @@ exclude = ["daemonize/tests*"]
 
 [project]
 name = "python-deamonizer"
-version = "1.0.0rc1"
+version = "1.0.0"
 description = "A daemanization class."
 readme = "README.rst"
 authors = [
@@ -48,6 +48,8 @@ classifiers = [
   "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent",
   "Programming Language :: Python",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
