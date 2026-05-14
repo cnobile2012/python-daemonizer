@@ -18,8 +18,8 @@ Python Daemonizer Class
    :target: https://pypi.python.org/pypi/python-daemonizer
    :alt: PyPI Wheel
 
-.. image:: https://github.com/cnobile2012/python-daemonizer/actions/workflows/master.yml/badge.svg?branch=master
-   :target: https://github.com/cnobile2012/python-daemonizer/actions/workflows/master.yml
+.. image:: https://github.com/cnobile2012/python-daemonizer/actions/workflows/main.yml/badge.svg?branch=master
+   :target: https://github.com/cnobile2012/python-daemonizer/actions/workflows/main.yml
    :alt: Build Status
 
 .. image:: http://img.shields.io/coveralls/cnobile2012/python-daemonizer/master.svg?branch=master
