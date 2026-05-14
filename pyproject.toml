@@ -24,7 +24,7 @@ exclude = ["daemonize/tests*"]
 #your-script = "your_package.module:main_function"
 
 [project]
-name = "python-deamonizer"
+name = "python-daemonizer"
 version = "1.0.1"
 description = "A daemanization class."
 readme = "README.rst"
