@@ -1,0 +1,14 @@
+[flake8]
+exclude =
+    .git,
+    __pycache__,
+    docs/source/conf.py,
+    old,
+    build,
+    dist,
+    txt
+
+per-file-ignores =
+    daemonize/__init__.py: F401
+    daemonize/*: E501
+    daemonize/tests/*: E402, E265

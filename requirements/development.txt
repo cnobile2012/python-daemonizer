@@ -4,10 +4,9 @@
 # Test coverage
 coverage
 coverage_enable_subprocess
+hatch
+hatchling
 wheel
-twine
-mock
-nose
-
-# Utils
+pytest
+flake8
 ipython

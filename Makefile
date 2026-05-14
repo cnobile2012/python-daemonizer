@@ -16,6 +16,7 @@ RM_CMD		= find $(PREFIX) -regextype posix-egrep -regex $(RM_REGEX) \
 COVERAGE_DIR	= $(PREFIX)/.coverage_tests
 COVERAGE_FILE	= $(PREFIX)/.coveragerc
 PIP_ARGS	= # Pass var for pip install.
+TEST_PATH	= # The path to run tests on.
 
 #----------------------------------------------------------------------
 all	: tar
@@ -26,14 +27,34 @@ tar	: clean
 	@(cd ..; tar -czvf $(DISTNAME).tar.gz --exclude=".git" \
           --exclude="logs/*.log" --exclude="dist/*" $(PACKAGE_DIR))
 
+# Run all tests
+# $ make tests
+#
+# Run all tests in a specific test file.
+# $ make tests TEST_PATH=tests/test_bases.py
+#
+# Run all tests in a specific test file and class.
+# $ make tests TEST_PATH=tests/test_bases.py::TestBases
+#
+# Run just one test in a specific test file and class.
+# $ make tests TEST_PATH=tests/test_bases.py::TestBases::test_version
 .PHONY	: tests
 tests	: clean
 	@rm -rf $(DOCS_DIR)/htmlcov
+	@mkdir -p $(LOGS_DIR)
 	@coverage erase --rcfile=$(COVERAGE_FILE)
-	$${VIRTUAL_ENV}/bin/coverage run --rcfile=$(COVERAGE_FILE) \
-        $${VIRTUAL_ENV}/bin/nosetests --nologcapture
+	@coverage run --rcfile=$(COVERAGE_FILE) -m pytest --capture=fd -s \
+         $(TEST_PATH)
 	@coverage report --rcfile=$(COVERAGE_FILE)
+	@coverage html --rcfile=$(COVERAGE_FILE)
 	@echo $(TODAY)
+
+.PHONY	: flake8
+flake8	:
+        # Error on syntax errors or undefined names.
+	flake8 . --select=E9,F7,F63,F82 --show-source
+        # Warn on everything else.
+	flake8 . --exit-zero
 
 # To add a pre-release candidate such as 'rc1' to a test package name an
 # environment variable needs to be set that setup.py can read.
@@ -45,19 +66,18 @@ tests	: clean
 #
 .PHONY	: build
 build	: clean
-	python setup.py sdist
+	@./config.py
+	hatch build dist
 
 .PHONY	: upload
-upload	: clobber
-	python setup.py sdist
-	python setup.py bdist_wheel --universal
-	twine upload --repository pypi dist/*
+upload	: build
+	hatch publish --repo main dist/*
+#	twine upload --repository pypi dist/*
 
 .PHONY	: upload-test
-upload-test: clobber
-	python setup.py sdist
-	python setup.py bdist_wheel --universal
-	twine upload --repository testpypi dist/*
+upload-test: build
+	hatch publish --repo test dist/*
+#	twine upload --verbose --repository testpypi dist/*
 
 .PHONY	: install-dev
 install-dev:

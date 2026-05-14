@@ -1,37 +1,39 @@
+# -*- coding: utf-8 -*-
+#
+# daemonize/daemon.py
+#
 """
-***
+*****************************
 Modified generic daemon class
-***
+*****************************
 
 This work is based off the original work of Sander Marechal, you can see his
 code at: http://www.jejik.com/articles/2007/02/a_simple_unix_linux_daemon_in_python/www.boxedice.com
 
 License:  http://creativecommons.org/licenses/by-sa/3.0/
 
-Changes:  23rd Jan 2009 (David Mytton <david@boxedice.com>)
-          - Replaced hard coded '/dev/null in __init__ with os.devnull
-          - Added OS check to conditionally remove code that doesn't
-            work on OS X
-          - Added output to console on completion
-          - Tidied up formatting
-          11th Mar 2009 (David Mytton <david@boxedice.com>)
-          - Fixed problem with daemon exiting on Python 2.4
-            (before SystemExit was part of the Exception base)
-          13th Aug 2010 (David Mytton <david@boxedice.com>
-          - Fixed unhandled exception if PID file is empty
-          23rd Nov 2018 (Carl Nobile <carl.nobile@gmail.com>)
-          - Now using fcntl to put an OS lock on the pid file, this will
-            catch all instances of the application exiting including
-            application and machine crashes making the PID file no longer
-            necessory to delete before a restart.
-          - Added a log file. A daemon process is disconnected from the
-            terminal so cannot print to the screen. The only soluction is to
-            send messages to a log file.
-          10th Nov 2022 (Carl Nobile <carl.nobile@gmail.com>)
-          - Removed support for Python 2.
-          20th Nov 2022 (Carl Nobile <carl.nobile@gmail.com>)
-          - Fixed a few bug with how redirecting of stdin, stdout, and
-            stderr was being done.
+Changes
+-------
+
+23rd Jan 2009 (David Mytton <david@boxedice.com>)
+ - Replaced hard coded '/dev/null in __init__ with os.devnull
+ - Added OS check to conditionally remove code that doesn't work on OS X
+ - Added output to console on completion
+ - Tidied up formatting
+
+11th Mar 2009 (David Mytton <david@boxedice.com>)
+ - Fixed problem with daemon exiting on Python 2.4 (before SystemExit was
+   part of the Exception base)
+
+13th Aug 2010 (David Mytton <david@boxedice.com>
+ - Fixed unhandled exception if PID file is empty
+
+23rd Nov 2018 (Carl Nobile <carl.nobile@gmail.com>)
+ - Now using fcntl to put an OS lock on the pid file, this will catch all
+   instances of the application exiting including application and machine
+   crashes plus the PID file no longer needs to be deleted.
+ - Added a log file. A daemon process is disconnected from the terminal so
+   cannot print to the screen after the process is daemonized.
 
 Exit values
 -----------
@@ -41,11 +43,11 @@ Exit values
 3 = Another process has a lock.
 4 = User could not create PID file.
 5 = Could not find a process to kill.
-6 = An external signal caused the exit (Could actually be a normal way to kill).
+6 = An external signal caused the exit (Could actually be a normal way to
+    kill).
 """
 
 # Core modules
-import errno
 import fcntl
 import io
 import logging
@@ -69,26 +71,19 @@ class Daemon:
         """
         Constructor take the following positional and keyword arguments.
 
-        :param pidfile: The full path to the pid file.
-        :type pidfile: str
+        :param str pidfile: The full path to the pid file.
         :param stdin: The stdin stream (default is os.devnull).
-        :type stdin: IO Stream
         :param stdout: The stdout stream (default is os.devnull).
-        :type stdout: IO Stream
         :param stderr: The stderr stream (default is os.devnull).
-        :type stderr: IO Stream
-        :param base_dir: Path to base used by the daemon process
-                         (defaults to .).
-        :type base_dir: str
-        :param umask: Set the permissions for the *base_dir* (defaults to 0o22).
-        :type umask: Octal int
-        :param verbose: Sets the logger to various levels. (1 = INFO,
-                        2 = DEBUG, 3 = ERROR, any other number is WARNING)
-        :type verbose: int
-        :param use_gevent: Use gevent for signals (defaults to False).
-        :type use_gevent: bool
-        :param logger_name: The name of the pre defines logger (default is ''
-                            (root)).
+        :param str base_dir: Path to base used by the daemon process
+                             (defaults to .).
+        :param int umask: Set the permissions for the *base_dir*
+                          (defaults to 0o22).
+        :param int verbose: Sets the logger to various levels. (1 = INFO,
+                            2 = DEBUG, 3 = ERROR, any other number is WARNING)
+        :param bool use_gevent: Use gevent for signals (defaults to False).
+        :param str logger_name: The name of the pre defined logger
+                                (default is '' (root)).
         """
         self.stdin = stdin
         self.stdout = stdout
@@ -101,13 +96,13 @@ class Daemon:
         self._pf = None
         self._log = logging.getLogger(logger_name)
 
-        if verbose == 1: # pragma: no cover
+        if verbose == 1:  # pragma: no cover
             self._log.setLevel(logging.INFO)
         elif verbose == 2:
             self._log.setLevel(logging.DEBUG)
-        elif verbose == 3: # pragma: no cover
+        elif verbose == 3:  # pragma: no cover
             self._log.setLevel(logging.ERROR)
-        else: # pragma: no cover
+        else:  # pragma: no cover
             self._log.setLevel(logging.WARNING)
 
     def daemonize(self):
@@ -118,7 +113,7 @@ class Daemon:
         """
         try:
             pid = os.fork()
-        except OSError as e: # pragma: no cover
+        except OSError as e:  # pragma: no cover
             self._log.error("Fork #1 failed: %d (%s)\n", e.errno, e.strerror)
             logging.shutdown()
             sys.exit(1)
@@ -138,14 +133,14 @@ class Daemon:
         # Do second fork
         try:
             pid = os.fork()
-        except OSError as e: # pragma: no cover
+        except OSError as e:  # pragma: no cover
             self._log.error("Fork #2 failed: %d (%s)\n", e.errno, e.strerror)
             logging.shutdown()
             sys.exit(2)
         else:
             self._log.debug("2nd fork was successful with pid %s", pid)
 
-            if pid > 0: # pragma: no cover
+            if pid > 0:  # pragma: no cover
                 # Exit from second parent
                 logging.shutdown()
                 sys.exit(0)
@@ -153,7 +148,7 @@ class Daemon:
         if sys.platform != 'darwin':  # This block breaks on OS X
             self._redirect()
 
-        def sigtermhandler(signum, frame): # pragma: no cover
+        def sigtermhandler(signum, frame):  # pragma: no cover
             if self.get_pid():
                 self._stop()
 
@@ -184,18 +179,21 @@ class Daemon:
         else:
             fd_se = fd_so
 
-        os.dup2(fd_si, sys.stdin.fileno())
+        os.dup2(fd_si, sys.__stdin__.fileno())
 
         try:
-            #https://stackoverflow.com/questions/10029697/file-descriptors-redirecting-is-stuck
-            os.dup2(fd_so, sys.stdout.fileno())
-        except io.UnsupportedOperation:
+            # https://stackoverflow.com/questions/10029697/file-descriptors-redirecting-is-stuck
+            os.dup2(fd_so, sys.__stdout__.fileno())
+        except io.UnsupportedOperation:  # pragma: no cover
             pass
 
-        os.dup2(fd_se, sys.stderr.fileno())
+        os.dup2(fd_se, sys.__stderr__.fileno())
         os.close(fd_si)
         os.close(fd_so)
-        if self.stderr: os.close(fd_se)
+
+        if self.stderr:
+            os.close(fd_se)
+
         self._log.debug("...Ending redirect")
 
     def lock_pid_file(self):
@@ -207,7 +205,9 @@ class Daemon:
         user = pwd.getpwuid(os.getuid()).pw_name
 
         try:
-            if not self._pf: self._pf = open(self.pidfile, 'a+')
+            if not self._pf:
+                self._pf = open(self.pidfile, 'a+')
+
             fcntl.flock(self._pf.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
         except IOError as e:
             self._pf.close()
@@ -216,7 +216,7 @@ class Daemon:
             self._log.warning(msg, self.pidfile, user, e.errno, e.strerror)
             logging.shutdown()
             sys.exit(3)
-        except OSError as e: # pragma: no cover
+        except OSError as e:  # pragma: no cover
             msg = "User '%s' could not create path: %s, %s (%s)"
             self._log.error(msg, user, self.pidfile, e.errno, e.strerror)
             logging.shutdown()
@@ -233,7 +233,7 @@ class Daemon:
         try:
             pf = open(self.pidfile, 'a+') if not self._pf else self._pf
             fcntl.flock(pf.fileno(), fcntl.LOCK_UN)
-        except IOError as e: # pragma: no cover
+        except IOError as e:  # pragma: no cover
             pf is not self._pf and pf.close()
             msg = "The lock file %s could not be unlocked, %s, %s (%s)"
             self._log.error(msg, self.pidfile, e.errno, e.strerror)
@@ -285,12 +285,13 @@ class Daemon:
                 os.kill(pid, signal.SIGTERM)
                 time.sleep(0.2)
 
-                if i % 10 == 0: # pragma: no cover
+                if i % 10 == 0:  # pragma: no cover
                     self._log.debug("Trying SIGKILL.")
                     os.kill(pid, signal.SIGKILL)
 
-                if not self.is_running(pid): break
-        except OSError as e: # pragma: no cover
+                if not self.is_running(pid):
+                    break
+        except OSError as e:  # pragma: no cover
             self._log.error(e)
             sys.exit(5)
         finally:
@@ -311,7 +312,7 @@ class Daemon:
         """
         return
 
-    def restart(self): # pragma: no cover
+    def restart(self):  # pragma: no cover
         """
         Restart the daemon
         """
@@ -344,7 +345,7 @@ class Daemon:
                 pid_txt = pf.read().strip()
                 pid = int(pid_txt) if pid_txt else None
                 pid = None if not self.is_running(pid) else pid
-        except (IOError, SystemExit) as e: # pragma: no cover
+        except (IOError, SystemExit) as e:  # pragma: no cover
             self._log.error("Could not open pid file %s, %s", self.pidfile, e)
             pid = None
 
@@ -357,7 +358,7 @@ class Daemon:
         self._pf.write("{:d}\n".format(pid))
         self._pf.flush()
 
-    def run(self, *args, **kwards): # pragma: no cover
+    def run(self, *args, **kwards):  # pragma: no cover
         """
         You should override this method when you subclass Daemon. It will
         be called after the process has been daemonized by start() or
@@ -371,7 +372,7 @@ class Daemon:
         raise NotImplementedError("The run() method must be implemented.")
 
 
-if __name__ == '__main__': # pragma: no cover
+if __name__ == '__main__':  # pragma: no cover
     class MyDaemon(Daemon):
 
         def run(self):
@@ -387,7 +388,6 @@ if __name__ == '__main__': # pragma: no cover
     logfile = os.path.abspath(os.path.join(log_path, 'daemon.log'))
     logging.basicConfig(filename=logfile, format=log_format,
                         level=logging.DEBUG)
-    #logging.basicConfig(format=log_format)
     md = MyDaemon(pidfile, verbose=2)
     arg = sys.argv[1] if len(sys.argv) == 2 else ''
     arg = 'start' if arg not in ('start', 'stop', 'restart') else arg

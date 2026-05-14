@@ -29,8 +29,27 @@ def create_logger(logfile=LOG_FILE):
     log_format = ("%(asctime)s %(levelname)s %(name)s %(funcName)s "
                   "[line:%(lineno)d] %(message)s")
     logfile = os.path.abspath(os.path.join(LOG_PATH, logfile))
-    logging.basicConfig(filename=logfile, format=log_format,
-                        level=logging.DEBUG)
+    handler = logging.FileHandler(logfile)
+    handler.setFormatter(logging.Formatter(log_format))
+    root = logging.getLogger()
+    root.setLevel(logging.DEBUG)
+    root.addHandler(handler)
+
+
+def print_logger_chain(logger: logging.Logger):
+    current = logger
+
+    while current:
+        # explicitly set level (0 = NOTSET)
+        level = logging.getLevelName(current.level)
+        effective = logging.getLevelName(current.getEffectiveLevel())
+        print(f"[{current.name}] set={level}  effective={effective} "
+              f"propagate={current.propagate}")
+
+        if not current.propagate or current.parent is None:
+            break
+
+        current = current.parent
 
 
 def control_daemon(action):
@@ -40,9 +59,17 @@ def control_daemon(action):
 
 
 class BaseTestDaemon(unittest.TestCase):
-    #_multiprocess_can_split_ = True
+    # _multiprocess_can_split_ = True
     _multiprocess_shared_ = True
     pidfile = os.path.join(LOG_PATH, 'test_daemon.pid')
+
+    def __init__(self, name, *args, **kwargs):
+        super().__init__(name, *args, **kwargs)
+
+    @classmethod
+    def setUpClass(cls):
+        create_logger()
+        # print_logger_chain(cls._log)
 
     @property
     def is_pid_file_locked(self):
@@ -71,15 +98,14 @@ class BaseTestDaemon(unittest.TestCase):
 class TestRunningDaemon(BaseTestDaemon):
     testoutput = None
 
-    @classmethod
-    def setUpClass(cls):
-        create_logger()
+    def __init__(self, name, *args, **kwargs):
+        super().__init__(name, *args, **kwargs)
 
-    ## @classmethod
-    ## def tearDownClass(cls):
-    ##     time.sleep(0.05)
-    ##     cmd = 'rm -f ' + os.path.join(LOG_PATH, 'test_daemon*')
-    ##     os.system(cmd)
+    # @classmethod
+    # def tearDownClass(cls):
+    #     time.sleep(0.05)
+    #     cmd = 'rm -f ' + os.path.join(LOG_PATH, 'test_daemon*')
+    #     os.system(cmd)
 
     def setUp(self):
         control_daemon('start')
@@ -180,10 +206,6 @@ def is_running(self, pid):
 class TestDaemonCoverage(BaseTestDaemon):
     _log = logging.getLogger()
 
-    @classmethod
-    def setUpClass(cls):
-        create_logger()
-
     def setUp(self):
         self.truncate_log_file(self.id())
         self._da = Daemon(self.pidfile, verbose=2)
@@ -273,7 +295,7 @@ class TestDaemonCoverage(BaseTestDaemon):
         da = Daemon(self.pidfile, verbose=2)
 
         with self.assertRaises(SystemExit) as e:
-            ret = da.lock_pid_file()
+            da.lock_pid_file()
 
         self.assertEqual(3, e.exception.code)
         self.assertTrue(self.is_pid_file_locked)
@@ -303,7 +325,7 @@ class TestDaemonCoverage(BaseTestDaemon):
         """
         Test is the daemon has stopped.
         """
-        result = self._da.is_running(123456789) # A bogus pid
+        result = self._da.is_running(123456789)  # A bogus pid
         self.assertFalse(result)
 
     #@unittest.skip("Temporarily skipped")
@@ -404,7 +426,7 @@ class TestDaemonCoverage(BaseTestDaemon):
         Test that the method _stop() exits properly.
         """
         with self.assertRaises(SystemExit) as e:
-            ret = self._da._stop()
+            self._da._stop()
 
         self.assertEqual(6, e.exception.code)
         self.assertFalse(self.is_pid_file_locked)
