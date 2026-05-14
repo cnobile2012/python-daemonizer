@@ -25,7 +25,7 @@ exclude = ["daemonize/tests*"]
 
 [project]
 name = "python-deamonizer"
-version = "1.0.0"
+version = "1.0.0rc1"
 description = "A daemanization class."
 readme = "README.rst"
 authors = [
@@ -52,7 +52,7 @@ classifiers = [
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
-  #"Programming Language :: Python :: 3.14",
+  "Programming Language :: Python :: 3.14",
 ]
 
 [project.urls]

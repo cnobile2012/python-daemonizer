@@ -17,6 +17,7 @@ COVERAGE_DIR	= $(PREFIX)/.coverage_tests
 COVERAGE_FILE	= $(PREFIX)/.coveragerc
 PIP_ARGS	= # Pass var for pip install.
 TEST_PATH	= # The path to run tests on.
+TEST_TAG	= # The path to run tests on.
 
 #----------------------------------------------------------------------
 all	: tar
@@ -65,6 +66,7 @@ flake8	:
 # The tarball would then be named python-daemon-2.0.0rc1.tar.gz
 #
 .PHONY	: build
+build	: export PR_TAG=$(TEST_TAG)
 build	: clean
 	@./config.py
 	hatch build dist
