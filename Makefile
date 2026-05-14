@@ -67,7 +67,7 @@ flake8	:
 #
 .PHONY	: build
 build	: export PR_TAG=$(TEST_TAG)
-build	: clean
+build	: clobber
 	@./config.py
 	hatch build dist
 
@@ -98,4 +98,4 @@ clobber	: clean
 	@rm -f $(LOGS_DIR)/*.pid
 	@rm -f $(LOGS_DIR)/*.txt
 	@rm -rf __pycache__
-	@rm -rf build dist
+	@rm -rf build

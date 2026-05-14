@@ -7,22 +7,18 @@ Python Daemonizer Class
    :alt: License
 
 .. image:: https://img.shields.io/pypi/v/python-daemonizer.svg
-   :target: https://pypi.python.org/pypi/python-daemonizer
+   :target: https://pypi.org/project/python-daemonizer/
    :alt: PyPi Version
 
 .. image:: https://img.shields.io/pypi/pyversions/python-daemonizer.svg
-    :target: https://pypi.python.org/pypi/python-daemonizer
+    :target: https://pypi.org/project/python-daemonizer
     :alt: PY Versions
-
-.. image:: http://img.shields.io/pypi/wheel/python-daemonizer.svg
-   :target: https://pypi.python.org/pypi/python-daemonizer
-   :alt: PyPI Wheel
 
 .. image:: https://github.com/cnobile2012/python-daemonizer/actions/workflows/main.yml/badge.svg?branch=master
    :target: https://github.com/cnobile2012/python-daemonizer/actions/workflows/main.yml
    :alt: Build Status
 
-.. image:: http://img.shields.io/coveralls/cnobile2012/python-daemonizer/master.svg?branch=master
+.. image:: https://img.shields.io/coveralls/cnobile2012/python-daemonizer/master.svg?branch=master
    :target: https://coveralls.io/github/cnobile2012/python-daemonizer?branch=master
    :alt: Test Coverage
 
