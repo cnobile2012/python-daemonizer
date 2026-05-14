@@ -6,20 +6,20 @@ Python Daemonizer Class
    :target: https://creativecommons.org/licenses/by-sa/3.0
    :alt: License
 
-.. image:: https://img.shields.io/pypi/v/python-deamonizer.svg
-   :target: https://pypi.python.org/pypi/python-deamonizer
+.. image:: https://img.shields.io/pypi/v/python-daemonizer.svg
+   :target: https://pypi.python.org/pypi/python-daemonizer
    :alt: PyPi Version
 
-.. image:: https://img.shields.io/pypi/pyversions/python-deamonizer.svg
-    :target: https://pypi.python.org/pypi/python-deamonizer
+.. image:: https://img.shields.io/pypi/pyversions/python-daemonizer.svg
+    :target: https://pypi.python.org/pypi/python-daemonizer
     :alt: PY Versions
 
-.. image:: http://img.shields.io/pypi/wheel/python-deamonizer.svg
-   :target: https://pypi.python.org/pypi/python-deamonizer
+.. image:: http://img.shields.io/pypi/wheel/python-daemonizer.svg
+   :target: https://pypi.python.org/pypi/python-daemonizer
    :alt: PyPI Wheel
 
-.. image:: https://github.com/cnobile2012/python-deamonizer/actions/workflows/master.yml/badge.svg?branch=master
-   :target: https://github.com/cnobile2012/python-deamonizer/actions/workflows/master.yml
+.. image:: https://github.com/cnobile2012/python-daemonizer/actions/workflows/master.yml/badge.svg?branch=master
+   :target: https://github.com/cnobile2012/python-daemonizer/actions/workflows/master.yml
    :alt: Build Status
 
 .. image:: http://img.shields.io/coveralls/cnobile2012/python-daemonizer/master.svg?branch=master
