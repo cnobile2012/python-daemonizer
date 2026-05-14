@@ -7,8 +7,8 @@
 
 logs/*
 build/*
+dist/*
 .coverage
 *.txt
 !requirements/*
 docs/htmlcov/*
-/home/travis/virtualenv/*

@@ -105,7 +105,7 @@ class Daemon:
         else:  # pragma: no cover
             self._log.setLevel(logging.WARNING)
 
-    def daemonize(self):
+    def daemonize(self) -> None:
         """
         Do the UNIX double-fork magic, see Stevens' 'Advanced
         Programming in the UNIX Environment' for details (ISBN 0201563177)
@@ -163,7 +163,7 @@ class Daemon:
             signal.signal(signal.SIGTERM, sigtermhandler)
             signal.signal(signal.SIGINT, sigtermhandler)
 
-    def _redirect(self):
+    def _redirect(self) -> None:
         """
         Redirect standard file descriptors.
         """
@@ -196,7 +196,7 @@ class Daemon:
 
         self._log.debug("...Ending redirect")
 
-    def lock_pid_file(self):
+    def lock_pid_file(self) -> None:
         """
         The lock file is released whenever the application releases the
         lock or the OS detects the application is no longer running so
@@ -225,7 +225,7 @@ class Daemon:
             msg = "Successfully created/locked pid file %s."
             self._log.info(msg, self.pidfile)
 
-    def unlock_pid_file(self):
+    def unlock_pid_file(self) -> None:
         """
         Unlock a file. The OS will unlock the file when the app is no
         longer running, so this may never get called.
@@ -242,9 +242,9 @@ class Daemon:
             msg = "Successfully unlocked PID file %s."
             self._log.info(msg, self.pidfile)
 
-    def start(self, *args, **kwargs):
+    def start(self, *args: tuple, **kwargs: dict) -> None:
         """
-        Start the daemon
+        Start the daemon.
 
         :param args: Any positional arguments to pass to the user's run method.
         :type args: tuple
@@ -262,9 +262,9 @@ class Daemon:
         self._log.info("...Started")
         self.run(*args, **kwargs)
 
-    def stop(self):
+    def stop(self) -> None:
         """
-        Stop the daemon
+        Stop the daemon.
         """
         self._log.info("Stopping...")
         # Get the pid from the pidfile
@@ -299,20 +299,23 @@ class Daemon:
             self._log.info("...Stopped")
             logging.shutdown()
 
-    def _stop(self):
+    def _stop(self) -> None:
+        """
+        Sigterm stop handler.
+        """
         self.unlock_pid_file()
         self.stop_callback()
         self._log.info("...Stopped")
         logging.shutdown()
         sys.exit(6)
 
-    def stop_callback(self):
+    def stop_callback(self) -> None:
         """
         Override this callback if you need to do something before exiting.
         """
         return
 
-    def restart(self):  # pragma: no cover
+    def restart(self) -> None:  # pragma: no cover
         """
         Restart the daemon
         """
@@ -320,7 +323,7 @@ class Daemon:
         time.sleep(1.0)
         self.start()
 
-    def is_running(self, pid):
+    def is_running(self, pid: int) -> bool:
         """
         Check to see if the pid is already in use.
 
@@ -339,7 +342,10 @@ class Daemon:
 
         return result
 
-    def get_pid(self):
+    def get_pid(self) -> int:
+        """
+        Read the PID from the pid file.
+        """
         try:
             with open(self.pidfile, 'r') as pf:
                 pid_txt = pf.read().strip()
@@ -351,14 +357,17 @@ class Daemon:
 
         return pid
 
-    def _update_pid_file(self, pid=None):
+    def _update_pid_file(self, pid: int=None) -> None:
+        """
+        Update the PID file.
+        """
         self._pf.seek(io.SEEK_SET)
         self._pf.truncate()
         pid = pid if pid is not None else os.getpid()
         self._pf.write("{:d}\n".format(pid))
         self._pf.flush()
 
-    def run(self, *args, **kwards):  # pragma: no cover
+    def run(self, *args: tuple, **kwards: dict) -> None:  # pragma: no cover
         """
         You should override this method when you subclass Daemon. It will
         be called after the process has been daemonized by start() or

@@ -24,8 +24,8 @@ exclude = ["daemonize/tests*"]
 #your-script = "your_package.module:main_function"
 
 [project]
-name = "noncom-bookkeeper"
-version = "0.1.0"
+name = "python-deamonizer"
+version = "1.0.0"
 description = "A daemanization class."
 readme = "README.rst"
 authors = [
@@ -34,7 +34,7 @@ authors = [
 maintainers = [
   {name = "Carl J. Nobile", email = "carl.nobile@gmail.com"},
 ]
-license = {file = "LICEN[CS]E*"}
+license = {file = "LICENSE"}
 dependencies = [
 ]
 requires-python = ">= 3.10"
@@ -43,7 +43,7 @@ classifiers = [
   #   3 - Alpha
   #   4 - Beta
   #   5 - Production/Stable
-  "Development Status :: 4 - Beta",
+  "Development Status :: 5 - Production/Stable",
   "Intended Audience :: Developers",
   "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent",
@@ -56,5 +56,5 @@ classifiers = [
 ]
 
 [project.urls]
-url = "https://github.com/cnobile2012/python-daemon"
-Repository = "https://github.com/cnobile2012/python-daemon"
+url = "https://github.com/cnobile2012/python-daemonizer"
+Repository = "https://github.com/cnobile2012/python-daemonizer"

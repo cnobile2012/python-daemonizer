@@ -6,12 +6,24 @@ Python Daemonizer Class
    :target: https://creativecommons.org/licenses/by-sa/3.0
    :alt: License
 
-.. image:: https://api.travis-ci.com/cnobile2012/python-daemon.svg?branch=master
-   :target: https://app.travis-ci.com/cnobile2012/python-daemon
+.. image:: https://img.shields.io/pypi/v/python-deamonizer.svg
+   :target: https://pypi.python.org/pypi/python-deamonizer
+   :alt: PyPi Version
+
+.. image:: https://img.shields.io/pypi/pyversions/python-deamonizer.svg
+    :target: https://pypi.python.org/pypi/python-deamonizer
+    :alt: PY Versions
+
+.. image:: http://img.shields.io/pypi/wheel/python-deamonizer.svg
+   :target: https://pypi.python.org/pypi/python-deamonizer
+   :alt: PyPI Wheel
+
+.. image:: https://github.com/cnobile2012/python-deamonizer/actions/workflows/main.yml/badge.svg?branch=master
+   :target: https://github.com/cnobile2012/python-deamonizer/actions/workflows/main.yml
    :alt: Build Status
 
-.. image:: http://img.shields.io/coveralls/cnobile2012/python-daemon/master.svg?branch=master
-   :target: https://coveralls.io/github/cnobile2012/python-daemon?branch=master
+.. image:: http://img.shields.io/coveralls/cnobile2012/python-daemonizer/master.svg?branch=master
+   :target: https://coveralls.io/github/cnobile2012/python-daemonizer?branch=master
    :alt: Test Coverage
 
 License: `Creative Commons <http://creativecommons.org/licenses/by-sa/3.0/>`_
